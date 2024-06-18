@@ -3,7 +3,6 @@ package com.example.jwt.domain.member.controller;
 import com.example.jwt.domain.member.entity.Member;
 import com.example.jwt.domain.member.service.MemberService;
 import com.example.jwt.global.rsData.RsData;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

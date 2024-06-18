@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -37,5 +38,31 @@ public class ArticleService {
     public Optional<Article> findById(Long id) {
         return articleRepository.findById(id);
 
+    }
+
+    public RsData canModify(Member actor, Article article) {
+        if (Objects.equals(actor.getId(), article.getAuthor().getId())) {
+            return  RsData.of(
+                    "S-1",
+                    "게시물을 수정할 수 있습니다."
+            );
+        }
+        return  RsData.of(
+                "F-1",
+                "게시물을 수정할 수 없습니다."
+        );
+
+    }
+
+    public RsData<Article> modify(Article article, String subject, String content) {
+        article.setSubject(subject);
+        article.setContent(content);
+        articleRepository.save(article);
+
+        return  RsData.of(
+                "S-4",
+                "%d번 게시물이 수정되었습니다.".formatted(article.getId()),
+                article
+        );
     }
 }

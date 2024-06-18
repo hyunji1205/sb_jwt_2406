@@ -1,10 +1,8 @@
 package com.example.jwt.global.initData;
 
-import com.example.jwt.domain.article.entity.Article;
 import com.example.jwt.domain.article.service.ArticleService;
 import com.example.jwt.domain.member.entity.Member;
 import com.example.jwt.domain.member.service.MemberService;
-import com.example.jwt.global.rsData.RsData;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
