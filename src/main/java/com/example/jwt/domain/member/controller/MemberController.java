@@ -3,6 +3,7 @@ package com.example.jwt.domain.member.controller;
 import com.example.jwt.domain.member.entity.Member;
 import com.example.jwt.domain.member.service.MemberService;
 import com.example.jwt.global.rsData.RsData;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.util.MimeTypeUtils.ALL_VALUE;
@@ -33,7 +36,7 @@ public class MemberController {
     @Getter
     @AllArgsConstructor
     public static class LoginResponse {
-        private final String accessToken;
+        private final  String accessToken;
     }
 
     @PostMapping(value = "/login", consumes = APPLICATION_JSON_VALUE)
@@ -52,15 +55,16 @@ public class MemberController {
                 new LoginResponse(accessToken)
         );
     }
+
     @Getter
     @AllArgsConstructor
     public static class MeResponse {
         private final Member member;
-
     }
+
     @GetMapping(value = "/me", consumes = ALL_VALUE)
-    public  RsData<MeResponse> me () {
-        Member member = memberService.findByUsername("user1").get();
+    public RsData<MeResponse> me (@AuthenticationPrincipal User user) {
+        Member member = memberService.findByUsername(user.getUsername()).get();
 
         return RsData.of(
                 "S-2",
