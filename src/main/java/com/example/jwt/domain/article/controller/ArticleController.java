@@ -97,6 +97,12 @@ public class ArticleController {
         private String content;
     }
 
+    @AllArgsConstructor
+    @Getter
+    public static class DeleteResponse {
+        private final Article article;
+    }
+
     @PostMapping(value = "")
     @Operation(summary = "등록", security = @SecurityRequirement(name = "bearerAuth"))
     public RsData<WriteResponse> write(
@@ -141,6 +147,34 @@ public class ArticleController {
                 modifyRs.getResultCode(),
                 modifyRs.getMsg(),
                 new ModifyResponse(modifyRs.getData())
+        );
+    }
+
+    @DeleteMapping(value = "/{id}")
+    @Operation(summary = "삭제", security = @SecurityRequirement(name = "bearerAuth"))
+    public RsData<DeleteResponse> remove(
+            @AuthenticationPrincipal User user,
+            @PathVariable("id") Long id
+    ){
+        Member member = memberService.findByUsername(user.getUsername()).orElseThrow();
+
+        Optional<Article> opArticle = articleService.findById(id);
+
+        if ( opArticle.isEmpty() ) return RsData.of(
+                "F-1",
+                "%d번 게시물은 존재하지 않습니다.".formatted(id),
+                null
+        );
+        RsData canDeleteRs = articleService.canDelete(member, opArticle.get());
+
+        if ( canDeleteRs.isFail() ) return canDeleteRs;
+
+        articleService.deleteById(id);
+
+        return RsData.of(
+                "S-5",
+                "%d번 게시물은 삭제되었습니다..".formatted(id),
+                null
         );
     }
 }

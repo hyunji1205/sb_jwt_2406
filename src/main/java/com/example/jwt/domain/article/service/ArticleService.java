@@ -65,4 +65,21 @@ public class ArticleService {
                 article
         );
     }
+
+    public RsData canDelete(Member actor, Article article) {
+        if (Objects.equals(actor.getId(), article.getAuthor().getId())) {
+            return  RsData.of(
+                    "S-1",
+                    "게시물을 삭제할 수 있습니다."
+            );
+        }
+        return  RsData.of(
+                "F-1",
+                "게시물을 삭제할 수 없습니다."
+        );
+    }
+
+    public void deleteById(Long id) {
+        articleRepository.deleteById(id);
+    }
 }
